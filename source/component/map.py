@@ -38,6 +38,7 @@ class Map():
         frame_rect = (0, 0, 25, 27)
         self.mouse_image = tool.get_image(tool.GFX[c.MOUSE], *frame_rect, c.BLACK, 1)
         self.mouse_rect = self.mouse_image.get_rect()
+        pg.mouse.set_visible(False)
 
     def isValid(self, map_x, map_y):
         if (map_x < 0 or map_x >= self.width or 
@@ -116,7 +117,6 @@ class Map():
 
     def drawMouseShow(self, surface):
         x, y = pg.mouse.get_pos()
-        pg.mouse.set_visible(False)
         self.mouse_rect.x = x
         self.mouse_rect.y = y
         surface.blit(self.mouse_image, self.mouse_rect)
