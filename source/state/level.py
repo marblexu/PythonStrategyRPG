@@ -102,3 +102,4 @@ class Level(tool.State):
         self.map.drawBackground(surface)
         self.group1.draw(surface)
         self.group2.draw(surface)
+        self.map.drawMouseShow(surface)

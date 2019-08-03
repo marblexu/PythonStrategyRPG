@@ -39,7 +39,7 @@ class Control():
         self.state_name = None
         self.state = None
         self.game_info = {c.CURRENT_TIME:0.0,
-                          c.LEVEL_NUM:3}
+                          c.LEVEL_NUM:1}
  
     def setup_states(self, state_dict, start_state):
         self.state_dict = state_dict

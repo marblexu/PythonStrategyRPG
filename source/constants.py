@@ -71,6 +71,7 @@ DEVIL = 'devil'
 SOLDIER = 'footman'
 MAGICIAN = 'magician'
 FIREBALL = 'fireball'
+MOUSE = 'mouse'
 
 #Game State
 INIT = 'init'

@@ -13,6 +13,7 @@ class Map():
         self.active_entity = None
         self.select = None
         self.setupMapImage(grid)
+        self.setupMouseImage()
 
     def setupMapImage(self, grid):
         self.grid_map = [[0 for x in range(self.width)] for y in range(self.height)]
@@ -31,7 +32,13 @@ class Map():
                 if type != c.MAP_EMPTY:
                     self.map_image.blit(tool.GRID[type], (x * c.REC_SIZE, y * c.REC_SIZE))
         self.map_image.set_colorkey(c.BLACK)
-        
+
+    def setupMouseImage(self):
+        self.mouse_frames = []
+        frame_rect = (0, 0, 25, 27)
+        self.mouse_image = tool.get_image(tool.GFX[c.MOUSE], *frame_rect, c.BLACK, 1)
+        self.mouse_rect = self.mouse_image.get_rect()
+
     def isValid(self, map_x, map_y):
         if (map_x < 0 or map_x >= self.width or 
             map_y < 0 or map_y >= self.height):
@@ -64,7 +71,7 @@ class Map():
                 self.active_entity.setDestination(self.select[0], self.select[1], entity)
                 return True
         return False
-    
+
     def checkMouseMove(self, x, y):
         if self.active_entity is None:
             return False
@@ -106,7 +113,14 @@ class Map():
 
     def setEntity(self, map_x, map_y, value):
         self.entity_map[map_y][map_x] = value
-        
+
+    def drawMouseShow(self, surface):
+        x, y = pg.mouse.get_pos()
+        pg.mouse.set_visible(False)
+        self.mouse_rect.x = x
+        self.mouse_rect.y = y
+        surface.blit(self.mouse_image, self.mouse_rect)
+
     def updateMap(self):
         for y in range(self.height):
             for x in range(self.width):
