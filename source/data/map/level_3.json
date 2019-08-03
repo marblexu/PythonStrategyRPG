@@ -1,0 +1,20 @@
+{
+    "mapgrid":[
+        {"x": 1, "y": 9, "type":1},
+        {"x": 2, "y": 9, "type":1},
+        {"x": 3, "y": 9, "type":1},
+        {"x": 5, "y": 5, "type":2}
+    ],
+    "group1":[
+        {"name":"devil", "x": 1, "y": 0},
+        {"name":"devil", "x": 3, "y": 0},
+        {"name":"devil", "x": 5, "y": 0},
+        {"name":"devil", "x": 7, "y": 0},
+        {"name":"devil", "x": 9, "y": 0}
+    ],
+    "group2":[
+        {"name":"footman", "x": 0, "y": -1},
+        {"name":"magician", "x": 2, "y": -1},
+        {"name":"footman", "x": 4, "y": -1}
+    ]
+}

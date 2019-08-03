@@ -1,0 +1,29 @@
+{
+    "devil":{
+        "health":100,
+        "range":5,
+        "damage":40,
+        "attack":5,
+        "defense":5,
+        "remote":0,
+        "speed":6
+    },
+    "footman":{
+        "health":100,
+        "range":5,
+        "damage":40,
+        "attack":5,
+        "defense":5,
+        "remote":0,
+        "speed":5
+    },
+    "magician":{
+        "health":70,
+        "range":4,
+        "damage":60,
+        "attack":10,
+        "defense":2,
+        "remote":1,
+        "speed":4
+    }
+}
