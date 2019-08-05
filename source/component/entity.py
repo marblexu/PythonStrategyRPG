@@ -53,9 +53,9 @@ class EntityAttr():
     def getHurt(self, enemy_attr):
         offset = 0
         if self.attack > enemy_attr.defense:
-            offset = (self.attack - enemy_attr.defense) * 0.1
-        elif self.attack < enemy_attr.defense:
             offset = (self.attack - enemy_attr.defense) * 0.05
+        elif self.attack < enemy_attr.defense:
+            offset = (self.attack - enemy_attr.defense) * 0.025
         hurt = int(self.damage * (1 + offset))
         return hurt
 

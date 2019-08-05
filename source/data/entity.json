@@ -8,12 +8,30 @@
         "remote":0,
         "speed":6
     },
+    "bandit":{
+        "health":100,
+        "range":6,
+        "damage":40,
+        "attack":7,
+        "defense":4,
+        "remote":0,
+        "speed":6
+    },
     "footman":{
         "health":100,
         "range":5,
         "damage":40,
         "attack":5,
         "defense":5,
+        "remote":0,
+        "speed":5
+    },
+    "armorman":{
+        "health":100,
+        "range":6,
+        "damage":50,
+        "attack":6,
+        "defense":4,
         "remote":0,
         "speed":5
     },

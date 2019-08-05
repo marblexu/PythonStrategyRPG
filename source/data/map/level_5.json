@@ -5,10 +5,10 @@
         {"x": 5, "y": 5, "type":2}
     ],
     "group1":[
-        {"name":"devil", "x": 1, "y": 0},
-        {"name":"devil", "x": 3, "y": 0},
-        {"name":"devil", "x": 5, "y": 0},
-        {"name":"devil", "x": 7, "y": 0}
+        {"name":"bandit", "x": 1, "y": 0},
+        {"name":"bandit", "x": 3, "y": 0},
+        {"name":"bandit", "x": 5, "y": 0},
+        {"name":"bandit", "x": 7, "y": 0}
     ],
     "group2":[
         {"name":"footman", "x": 2, "y": -1},

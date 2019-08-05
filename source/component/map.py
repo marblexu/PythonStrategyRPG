@@ -117,9 +117,12 @@ class Map():
 
     def drawMouseShow(self, surface):
         x, y = pg.mouse.get_pos()
-        self.mouse_rect.x = x
-        self.mouse_rect.y = y
-        surface.blit(self.mouse_image, self.mouse_rect)
+        map_x = x//c.REC_SIZE
+        map_y = y//c.REC_SIZE
+        if self.isValid(map_x, map_y):
+            self.mouse_rect.x = x
+            self.mouse_rect.y = y
+            surface.blit(self.mouse_image, self.mouse_rect)
 
     def updateMap(self):
         for y in range(self.height):
