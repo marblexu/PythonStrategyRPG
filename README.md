@@ -13,3 +13,7 @@ $ python main.py
 
 # How to Play
 * use mouse to select the active creature to walk or attack 
+
+# Demo
+![rpg1](https://raw.githubusercontent.com/marblexu/PythonStrategyRPG/master/demo/rpg1.png)
+![rpg2](https://raw.githubusercontent.com/marblexu/PythonStrategyRPG/master/demo/rpg2.png)
