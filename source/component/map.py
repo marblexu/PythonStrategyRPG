@@ -30,7 +30,11 @@ class Map():
             for x in range(self.width):
                 type = self.grid_map[y][x]
                 if type != c.MAP_EMPTY:
-                    self.map_image.blit(tool.GRID[type], (x * c.REC_SIZE, y * c.REC_SIZE))
+                    if c.MAP_HEXAGON:
+                        base_x, base_y = tool.getHexMapPos(x, y)
+                        self.map_image.blit(tool.GRID[type], (base_x, base_y))
+                    else:
+                        self.map_image.blit(tool.GRID[type], (x * c.REC_SIZE, y * c.REC_SIZE))
         self.map_image.set_colorkey(c.BLACK)
 
     def setupMouseImage(self):
@@ -146,6 +150,9 @@ class Map():
         self.checkMouseMove(mouse_x, mouse_y)
 
     def drawBackground(self, surface):
+        if c.MAP_HEXAGON:
+            return self.drawBackgroundHex(surface)
+
         pg.draw.rect(surface, c.LIGHTYELLOW, pg.Rect(0, 0, c.MAP_WIDTH, c.MAP_HEIGHT))
         
         for y in range(self.height):
@@ -176,3 +183,55 @@ class Map():
             start_pos = (c.REC_SIZE * x, 0) 
             end_pos = (c.REC_SIZE * x, c.MAP_HEIGHT)
             pg.draw.line(surface, c.BLACK, start_pos, end_pos, 1)
+
+    def getMovePositions(self, x, y):
+        if c.MAP_HEXAGON:
+            if y % 2 == 0:
+                offsets = [(-1, 0), (-1, -1), (0, -1), (1, 0), (-1, 1), (0, 1)]
+            else:
+                offsets = [(-1, 0), (0, -1), (1, -1), (1, 0), (0, 1), (1, 1)]
+        else:
+            # use four ways or eight ways to move
+            offsets = [(-1,0), (0, -1), (1, 0), (0, 1)]
+            #offsets = [(-1,0), (0, -1), (1, 0), (0, 1), (-1,-1), (1, -1), (-1, 1), (1, 1)]
+        return offsets
+
+    def drawBackgroundHex(self, surface):
+        Y_LEN = c.HEX_Y_SIZE // 2
+        X_LEN = c.HEX_X_SIZE // 2
+
+        pg.draw.rect(surface, c.LIGHTYELLOW, pg.Rect(0, 0, c.MAP_WIDTH, c.MAP_HEIGHT))
+
+        for y in range(self.height):
+            for x in range(self.width):
+                if self.bg_map[y][x] == c.BG_EMPTY:
+                    color = c.LIGHTYELLOW
+                elif self.bg_map[y][x] == c.BG_ACTIVE:
+                    color = c.SKY_BLUE
+                elif self.bg_map[y][x] == c.BG_RANGE:
+                    color = c.NAVYBLUE
+                elif self.bg_map[y][x] == c.BG_SELECT:
+                    color = c.GREEN
+                elif self.bg_map[y][x] == c.BG_ATTACK:
+                    color = c.GOLD
+
+                base_x, base_y = tool.getHexMapPos(x, y)
+                points = [(base_x, base_y + Y_LEN//2 + Y_LEN), (base_x, base_y + Y_LEN//2),
+                          (base_x + X_LEN, base_y), (base_x + X_LEN * 2, base_y + Y_LEN//2),
+                          (base_x + X_LEN * 2, base_y + Y_LEN//2 + Y_LEN), (base_x + X_LEN, base_y + Y_LEN*2)]
+                pg.draw.polygon(surface, color, points)
+
+        surface.blit(self.map_image, self.rect)
+
+        for y in range(self.height):
+            for x in range(self.width):
+                if y % 2 == 0:
+                    base_x = X_LEN * 2 * x
+                    base_y = Y_LEN * 3 * (y//2)
+                else:
+                    base_x = X_LEN * 2 * x + X_LEN
+                    base_y = Y_LEN * 3 * (y//2) + Y_LEN//2 + Y_LEN
+                points = [(base_x, base_y + Y_LEN//2 + Y_LEN), (base_x, base_y + Y_LEN//2),
+                          (base_x + X_LEN, base_y), (base_x + X_LEN * 2, base_y + Y_LEN//2),
+                          (base_x + X_LEN * 2, base_y + Y_LEN//2 + Y_LEN), (base_x + X_LEN, base_y + Y_LEN*2)]
+                pg.draw.lines(surface, c.BLACK, True, points)

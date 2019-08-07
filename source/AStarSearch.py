@@ -23,9 +23,7 @@ def AStarSearch(map, source, dest):
         return (x, y)
         
     def getPositions(map, location):
-        # use four ways or eight ways to move
-        offsets = [(-1,0), (0, -1), (1, 0), (0, 1)]
-        #offsets = [(-1,0), (0, -1), (1, 0), (0, 1), (-1,-1), (1, -1), (-1, 1), (1, 1)]
+        offsets = map.getMovePositions(location.x, location.y)
         poslist = []
         for offset in offsets:
             pos = getNewPosition(map, location, offset)

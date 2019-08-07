@@ -120,6 +120,31 @@ def load_entiry_attr(file_path):
         attrs[name] = attr
     return attrs
 
+def getHexMapPos(x, y):
+    X_LEN = c.HEX_X_SIZE // 2
+    Y_LEN = c.HEX_Y_SIZE // 2
+    if y % 2 == 0:
+        base_x = X_LEN * 2 * x
+        base_y = Y_LEN * 3 * (y//2)
+    else:
+        base_x = X_LEN * 2 * x + X_LEN
+        base_y = Y_LEN * 3 * (y//2) + Y_LEN//2 + Y_LEN
+    return (base_x, base_y)
+
+def getHexMapIndex(x, y):
+    X_LEN = c.HEX_X_SIZE // 2
+    Y_LEN = c.HEX_Y_SIZE // 2
+    tmp_x, offset_x = divmod(x, c.HEX_X_SIZE)
+    tmp_y, offset_y = divmod(y, Y_LEN * 3)
+    if offset_y <= (Y_LEN + Y_LEN//2):
+        map_x, map_y = tmp_x, tmp_y
+    else:
+        if offset_x <= X_LEN:
+            map_x, map_y = tmp_x - 1, tmp_y + 1
+        else:
+            map_x, map_y = tmp_x, tmp_y + 1
+    return (map_x, map_y)
+
 pg.init()
 pg.display.set_caption(c.ORIGINAL_CAPTION)
 SCREEN = pg.display.set_mode(c.SCREEN_SIZE)

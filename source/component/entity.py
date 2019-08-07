@@ -70,8 +70,7 @@ class Entity():
         self.loadFrames(sheet)
         self.image = self.frames[self.frame_index]
         self.rect = self.image.get_rect()
-        self.rect.x = self.map_x * c.REC_SIZE + 5
-        self.rect.y = self.map_y * c.REC_SIZE + 8
+        self.rect.x, self.rect.y = self.getRectPos(map_x, map_y)
         
         self.attr = EntityAttr(data)
         self.health = self.attr.max_health
@@ -82,6 +81,20 @@ class Entity():
         self.current_time = 0.0
         self.move_speed = c.MOVE_SPEED
     
+    def getRectPos(self, map_x, map_y):
+        if c.MAP_HEXAGON:
+            base_x, base_y = tool.getHexMapPos(map_x, map_y)
+            return (base_x + 4, base_y + 6)
+        else:
+            return(map_x * c.REC_SIZE + 5, map_y * c.REC_SIZE + 8)
+
+    def getMapIndex(self, x, y):
+        if c.MAP_HEXAGON:
+            map_x, map_y = tool.getHexMapIndex(x, y)
+        else:
+            map_x, map_y = (x//c.REC_SIZE, y//c.REC_SIZE)
+        return (map_x, map_y)
+
     def loadFrames(self, sheet):
         frame_rect_list = [(64, 0, 32, 32), (96, 0, 32, 32)]
         for frame_rect in frame_rect_list:
@@ -89,8 +102,7 @@ class Entity():
                             c.BLACK, c.SIZE_MULTIPLIER))
         
     def setDestination(self, map_x, map_y, enemy=None):
-        self.dest_x = map_x * c.REC_SIZE + 5
-        self.dest_y = map_y * c.REC_SIZE + 8
+        self.dest_x, self.dest_y = self.getRectPos(map_x, map_y)
         self.next_x, self.next_y = self.rect.x, self.rect.y
         self.enemy = enemy
         self.state = c.WALK
@@ -134,13 +146,12 @@ class Entity():
      
     def walkToDestination(self, map):
         if self.rect.x == self.next_x and self.rect.y == self.next_y:
-            source = (self.rect.x//c.REC_SIZE, self.rect.y//c.REC_SIZE)
-            dest = (self.dest_x//c.REC_SIZE, self.dest_y//c.REC_SIZE)
+            source = self.getMapIndex(self.rect.x, self.rect.y)
+            dest = self.getMapIndex(self.dest_x, self.dest_y)
             location = AStarSearch.AStarSearch(map, source, dest)
             if location is not None:
                 map_x, map_y, _ = AStarSearch.getFirstStepAndDistance(location)
-                self.next_x = map_x * c.REC_SIZE + 5
-                self.next_y = map_y * c.REC_SIZE + 8
+                self.next_x, self.next_y = self.getRectPos(map_x, map_y)
             else:
                 self.state = c.IDLE
                 print('Error no path to walk to dest(%d,%d)' % (self.next_x, self.next_y))
