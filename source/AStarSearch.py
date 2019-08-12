@@ -1,6 +1,7 @@
 __author__ = 'marble_xu'
 
 from .component import map
+from . import tool
 
 class SearchEntry():
     def __init__(self, x, y, g_cost, f_cost=0, pre_entry=None):
@@ -23,7 +24,7 @@ def AStarSearch(map, source, dest):
         return (x, y)
         
     def getPositions(map, location):
-        offsets = map.getMovePositions(location.x, location.y)
+        offsets = tool.getMovePositions(location.x, location.y)
         poslist = []
         for offset in offsets:
             pos = getNewPosition(map, location, offset)
@@ -32,8 +33,8 @@ def AStarSearch(map, source, dest):
         return poslist
     
     # imporve the heuristic distance more precisely in future
-    def calHeuristic(pos, dest):
-        return abs(dest.x - pos[0]) + abs(dest.y - pos[1])
+    def calHeuristic(map, pos, dest):
+        return map.calHeuristicDistance(dest.x, dest.y, pos[0], pos[1])
         
     def getMoveCost(location, pos):
         if location.x != pos[0] and location.y != pos[1]:
@@ -54,7 +55,7 @@ def AStarSearch(map, source, dest):
             # if position is already in closedlist, do nothing
             if isInList(closedlist, pos) is None:
                 findEntry = isInList(openlist, pos)
-                h_cost = calHeuristic(pos, dest)
+                h_cost = calHeuristic(map, pos, dest)
                 g_cost = location.g_cost + getMoveCost(location, pos)
                 if findEntry is None :
                     # if position is not in openlist, add it to openlist

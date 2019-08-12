@@ -1,7 +1,7 @@
 __author__ = 'marble_xu'
 
 from .component import map
-from . import AStarSearch
+from . import AStarSearch, tool
 
 class EnemyInfo():
     def __init__(self, enemy):
@@ -12,7 +12,7 @@ class EnemyInfo():
          
 def getAction(entity, map, enemy_group):
     def getDestination(entity, map, enemy):
-        dir_list = [(-1,-1), (-1,0), (-1,1), (0,-1), (0,1), (1,-1),(1,0), (1,1)]
+        dir_list = tool.getAttackPositions(enemy.map_x, enemy.map_y)
         best_pos = None
         min_dis = 0
         for offset_x, offset_y in dir_list:
@@ -53,7 +53,7 @@ def getAction(entity, map, enemy_group):
     info_list = []
     best_info = None
     for enemy in enemy_group:
-        if abs(entity.map_x - enemy.map_x) <= 1 and abs(entity.map_y - enemy.map_y) <= 1:
+        if tool.isNextToEntity(entity, enemy):
             print('entity(%d,%d) next to enemy(%d, %d)' % (entity.map_x, entity.map_y, enemy.map_x, enemy.map_y))
             destination = (entity.map_x, entity.map_y)
         else:

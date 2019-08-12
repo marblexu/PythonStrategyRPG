@@ -88,8 +88,10 @@ class Entity():
         else:
             return(map_x * c.REC_SIZE + 5, map_y * c.REC_SIZE + 8)
 
-    def getMapIndex(self, x, y):
+    def getRecIndex(self, x, y):
         if c.MAP_HEXAGON:
+            x += c.HEX_X_SIZE // 2 - 4
+            y += c.HEX_Y_SIZE // 2 - 6
             map_x, map_y = tool.getHexMapIndex(x, y)
         else:
             map_x, map_y = (x//c.REC_SIZE, y//c.REC_SIZE)
@@ -154,8 +156,11 @@ class Entity():
                 self.next_x, self.next_y = self.getRectPos(map_x, map_y)
             else:
                 self.state = c.IDLE
-                print('Error no path to walk to dest(%d,%d)' % (self.next_x, self.next_y))
-        if self.rect.x != self.next_x:
+
+        if c.MAP_HEXAGON and self.rect.x != self.next_x and self.rect.y != self.next_y:
+            self.rect.x += self.move_speed if self.rect.x < self.next_x else -self.move_speed
+            self.rect.y += self.move_speed if self.rect.y < self.next_y else -self.move_speed
+        elif self.rect.x != self.next_x:
             self.rect.x += self.move_speed if self.rect.x < self.next_x else -self.move_speed
         elif self.rect.y != self.next_y:
             self.rect.y += self.move_speed if self.rect.y < self.next_y else -self.move_speed
@@ -174,8 +179,7 @@ class Entity():
                 self.walkToDestination(map)
             else:
                 map.setEntity(self.map_x, self.map_y, None)
-                self.map_x = self.dest_x // c.REC_SIZE
-                self.map_y = self.dest_y // c.REC_SIZE
+                self.map_x, self.map_y = self.getRecIndex(self.dest_x, self.dest_y)
                 map.setEntity(self.map_x, self.map_y, self)
                 if self.enemy is None:
                     self.state = c.IDLE

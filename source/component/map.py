@@ -45,7 +45,14 @@ class Map():
         pg.mouse.set_visible(False)
 
     def isValid(self, map_x, map_y):
-        if (map_x < 0 or map_x >= self.width or 
+        if c.MAP_HEXAGON:
+            if map_y % 2 == 0:
+                max_x = self.width
+            else:
+                max_x = self.width - 1
+        else:
+            max_x = self.width
+        if (map_x < 0 or map_x >= max_x or
             map_y < 0 or map_y >= self.height):
             return False
         return True
@@ -53,13 +60,28 @@ class Map():
     def isMovable(self, map_x, map_y):
         return (self.entity_map[map_y][map_x] == None and 
                 self.grid_map[map_y][map_x] != c.MAP_STONE)
-        
+
+    def getMapIndex(self, x, y):
+        if c.MAP_HEXAGON:
+            return tool.getHexMapIndex(x, y)
+        else:
+            return (x//c.REC_SIZE, y//c.REC_SIZE)
+
+    def getDistance(self, x1, y1, map_x2, map_y2):
+        if c.MAP_HEXAGON:
+            x2, y2 = tool.getHexMapPos(map_x2, map_y2)
+            x2 += c.HEX_X_SIZE // 2
+            y2 += c.HEX_Y_SIZE // 2
+        else:
+            x2 = map_x2 * c.REC_SIZE + c.REC_SIZE//2
+            y2 = map_y2 * c.REC_SIZE + c.REC_SIZE//2
+        return (abs(x1 - x2) + abs(y1 - y2))
+
     def checkMouseClick(self, x, y):
         if self.active_entity is None:
             return False
         
-        map_x = x//c.REC_SIZE
-        map_y = y//c.REC_SIZE
+        map_x, map_y = self.getMapIndex(x, y)
         if not self.isValid(map_x, map_y):
             return False
 
@@ -81,8 +103,7 @@ class Map():
         if self.active_entity is None:
             return False
 
-        map_x = x//c.REC_SIZE
-        map_y = y//c.REC_SIZE
+        map_x, map_y = self.getMapIndex(x, y)
         if not self.isValid(map_x, map_y):
             return False
         
@@ -96,7 +117,7 @@ class Map():
                 if self.active_entity.isRemote():
                     self.bg_map[map_y][map_x] = c.BG_ATTACK
                 else:
-                    dir_list = [(-1,-1), (-1,0), (-1,1), (0,-1), (0,1), (1,-1),(1,0), (1,1)]
+                    dir_list = tool.getAttackPositions(map_x, map_y)
                     res_list = []
                     for offset_x, offset_y in dir_list:
                         if self.isValid(map_x + offset_x, map_y + offset_y):
@@ -106,7 +127,7 @@ class Map():
                     if len(res_list) > 0:
                         min_dis = c.MAP_WIDTH
                         for tmp_x, tmp_y in res_list:
-                            distance = abs(x - (tmp_x * c.REC_SIZE + c.REC_SIZE//2)) + abs(y - (tmp_y * c.REC_SIZE + c.REC_SIZE//2))
+                            distance = self.getDistance(x, y, tmp_x, tmp_y)
                             if tmp_x != map_x and tmp_y != map_y:
                                 distance -= c.REC_SIZE//2
                             if distance < min_dis:
@@ -121,8 +142,7 @@ class Map():
 
     def drawMouseShow(self, surface):
         x, y = pg.mouse.get_pos()
-        map_x = x//c.REC_SIZE
-        map_y = y//c.REC_SIZE
+        map_x, map_y = self.getMapIndex(x, y)
         if self.isValid(map_x, map_y):
             self.mouse_rect.x = x
             self.mouse_rect.y = y
@@ -142,7 +162,7 @@ class Map():
         
         for y in range(self.height):
             for x in range(self.width):
-                if not self.isMovable(x,y):
+                if not self.isMovable(x,y) or not self.isValid(x,y):
                     continue
                 if self.active_entity.inRange(self, x, y):
                     self.bg_map[y][x] = c.BG_RANGE
@@ -184,17 +204,18 @@ class Map():
             end_pos = (c.REC_SIZE * x, c.MAP_HEIGHT)
             pg.draw.line(surface, c.BLACK, start_pos, end_pos, 1)
 
-    def getMovePositions(self, x, y):
+    def calHeuristicDistance(self, x1, y1, x2, y2):
         if c.MAP_HEXAGON:
-            if y % 2 == 0:
-                offsets = [(-1, 0), (-1, -1), (0, -1), (1, 0), (-1, 1), (0, 1)]
+            dis_y = abs(y1 - y2)
+            dis_x = abs(x1 - x2)
+            half_y = dis_y // 2
+            if dis_y >= dis_x:
+                dis_x = 0
             else:
-                offsets = [(-1, 0), (0, -1), (1, -1), (1, 0), (0, 1), (1, 1)]
+                dis_x -= half_y
+            return (dis_y + dis_x)
         else:
-            # use four ways or eight ways to move
-            offsets = [(-1,0), (0, -1), (1, 0), (0, 1)]
-            #offsets = [(-1,0), (0, -1), (1, 0), (0, 1), (-1,-1), (1, -1), (-1, 1), (1, 1)]
-        return offsets
+            return abs(x1 - x2) + abs(y1 - y2)
 
     def drawBackgroundHex(self, surface):
         Y_LEN = c.HEX_Y_SIZE // 2
@@ -229,6 +250,8 @@ class Map():
                     base_x = X_LEN * 2 * x
                     base_y = Y_LEN * 3 * (y//2)
                 else:
+                    if x == self.width - 1:
+                        continue
                     base_x = X_LEN * 2 * x + X_LEN
                     base_y = Y_LEN * 3 * (y//2) + Y_LEN//2 + Y_LEN
                 points = [(base_x, base_y + Y_LEN//2 + Y_LEN), (base_x, base_y + Y_LEN//2),
