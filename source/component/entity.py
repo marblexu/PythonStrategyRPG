@@ -148,8 +148,8 @@ class Entity():
      
     def walkToDestination(self, map):
         if self.rect.x == self.next_x and self.rect.y == self.next_y:
-            source = self.getMapIndex(self.rect.x, self.rect.y)
-            dest = self.getMapIndex(self.dest_x, self.dest_y)
+            source = self.getRecIndex(self.rect.x, self.rect.y)
+            dest = self.getRecIndex(self.dest_x, self.dest_y)
             location = AStarSearch.AStarSearch(map, source, dest)
             if location is not None:
                 map_x, map_y, _ = AStarSearch.getFirstStepAndDistance(location)

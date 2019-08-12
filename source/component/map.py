@@ -72,10 +72,15 @@ class Map():
             x2, y2 = tool.getHexMapPos(map_x2, map_y2)
             x2 += c.HEX_X_SIZE // 2
             y2 += c.HEX_Y_SIZE // 2
+            distance = (abs(x1 - x2) + abs(y1 - y2))
         else:
+            map_x1, map_y1 = self.getMapIndex(x1, y1)
             x2 = map_x2 * c.REC_SIZE + c.REC_SIZE//2
             y2 = map_y2 * c.REC_SIZE + c.REC_SIZE//2
-        return (abs(x1 - x2) + abs(y1 - y2))
+            distance = (abs(x1 - x2) + abs(y1 - y2))
+            if map_x1 != map_x2 and map_y1 != map_y2:
+               distance -= c.REC_SIZE//2
+        return distance
 
     def checkMouseClick(self, x, y):
         if self.active_entity is None:
@@ -128,8 +133,6 @@ class Map():
                         min_dis = c.MAP_WIDTH
                         for tmp_x, tmp_y in res_list:
                             distance = self.getDistance(x, y, tmp_x, tmp_y)
-                            if tmp_x != map_x and tmp_y != map_y:
-                                distance -= c.REC_SIZE//2
                             if distance < min_dis:
                                 min_dis = distance
                                 res = (tmp_x, tmp_y)
