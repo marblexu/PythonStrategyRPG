@@ -249,14 +249,9 @@ class Map():
 
         for y in range(self.height):
             for x in range(self.width):
-                if y % 2 == 0:
-                    base_x = X_LEN * 2 * x
-                    base_y = Y_LEN * 3 * (y//2)
-                else:
-                    if x == self.width - 1:
-                        continue
-                    base_x = X_LEN * 2 * x + X_LEN
-                    base_y = Y_LEN * 3 * (y//2) + Y_LEN//2 + Y_LEN
+                if y % 2 == 1 and x == self.width - 1:
+                    continue
+                base_x, base_y = tool.getHexMapPos(x, y)
                 points = [(base_x, base_y + Y_LEN//2 + Y_LEN), (base_x, base_y + Y_LEN//2),
                           (base_x + X_LEN, base_y), (base_x + X_LEN * 2, base_y + Y_LEN//2),
                           (base_x + X_LEN * 2, base_y + Y_LEN//2 + Y_LEN), (base_x + X_LEN, base_y + Y_LEN*2)]
