@@ -180,16 +180,14 @@ class Map():
         
         for y in range(self.height):
             for x in range(self.width):
-                if self.bg_map[y][x] == c.BG_EMPTY:
-                    color = c.LIGHTYELLOW
-                elif self.bg_map[y][x] == c.BG_ACTIVE:
-                    color = c.SKY_BLUE
-                elif self.bg_map[y][x] == c.BG_RANGE:
-                    color = c.NAVYBLUE
-                elif self.bg_map[y][x] == c.BG_SELECT:
-                    color = c.GREEN
-                elif self.bg_map[y][x] == c.BG_ATTACK:
-                    color = c.GOLD
+                colors = {
+                    c.BG_EMPTY: c.LIGHTYELLOW,
+                    c.BG_ACTIVE: c.SKY_BLUE,
+                    c.BG_RANGE: c.NAVYBLUE,
+                    c.BG_SELECT: c.GREEN,
+                    c.BG_ATTACK: c.GOLD
+                }
+                color = colors[self.bg_map[y][x]]
                 pg.draw.rect(surface, color, (x * c.REC_SIZE, y * c.REC_SIZE, 
                         c.REC_SIZE, c.REC_SIZE))
         
@@ -228,16 +226,14 @@ class Map():
 
         for y in range(self.height):
             for x in range(self.width):
-                if self.bg_map[y][x] == c.BG_EMPTY:
-                    color = c.LIGHTYELLOW
-                elif self.bg_map[y][x] == c.BG_ACTIVE:
-                    color = c.SKY_BLUE
-                elif self.bg_map[y][x] == c.BG_RANGE:
-                    color = c.NAVYBLUE
-                elif self.bg_map[y][x] == c.BG_SELECT:
-                    color = c.GREEN
-                elif self.bg_map[y][x] == c.BG_ATTACK:
-                    color = c.GOLD
+                colors = {
+                    c.BG_EMPTY: c.LIGHTYELLOW,
+                    c.BG_ACTIVE: c.SKY_BLUE,
+                    c.BG_RANGE: c.NAVYBLUE,
+                    c.BG_SELECT: c.GREEN,
+                    c.BG_ATTACK: c.GOLD
+                }
+                color = colors[self.bg_map[y][x]]
 
                 base_x, base_y = tool.getHexMapPos(x, y)
                 points = [(base_x, base_y + Y_LEN//2 + Y_LEN), (base_x, base_y + Y_LEN//2),
